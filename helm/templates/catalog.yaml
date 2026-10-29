@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "ecom-polyglot-platform.fullname" . }}-catalog"
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: catalog
+spec:
+  replicas: {{ .Values.catalog.replicaCount }}
+  selectorLabels:
+    matchLabels:
+      {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: catalog
+  template:
+    metadata:
+      labels:
+        {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: catalog
+    spec:
+      containers:
+        - name: catalog
+          image: "{{ .Values.catalog.image.repository }}:{{ .Values.catalog.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: "{{ .Values.catalog.resources.requests.cpu }}"
+              memory: "{{ .Values.catalog.resources.requests.memory }}"
+            limits:
+              cpu: "{{ .Values.catalog.resources.limits.cpu }}"
+              memory: "{{ .Values.catalog.resources.limits.memory }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.catalog.service.port }}
+              protocol: TCP
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_USER
+            
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_PASSWORD
+
+            - name: CATALOG_DB_DSN
+              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-db:5432/catalog_db?sslmode=disable"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: catalog
+spec:
+  type: {{ .Values.catalog.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.catalog.service.port }}
+      containerPort: http
+      protocol: TCP
+  selector:
+    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: catalog
