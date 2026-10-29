@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8081
+              containerPort: {{ .Values.auth.service.port }}
               protocol: TCP
           env:
             - name: AUTH_DB_URL
@@ -45,3 +45,22 @@ spec:
             limits:
               memory: "{{ .Values.auth.resources.limits.memory }}"
               cpu: "{{ .Values.auth.resources.limits.cpu }}"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: auth
+spec:
+  type: {{ .Values.auth.service.type }}
+  ports:
+   - name: http
+     port: {{ .Values.auth.service.port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: auth

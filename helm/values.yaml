@@ -11,9 +11,12 @@ global:
 
 # Auth service
 auth:
+  replicaCount: 1
+
   image:
     repository: auth-service
     tag: v2
+
   resources:
     requests:
       cpu: 250m
@@ -21,7 +24,10 @@ auth:
     limits:
       cpu: 500m
       memory: 256Mi
-  replicaCount: 1
+  
+  service:
+    type: ClusterIP
+    port: 8081
 
 nameOverride: ""
 fullnameOverride: ""
