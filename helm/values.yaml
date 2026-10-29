@@ -48,5 +48,13 @@ catalog:
     type: ClusterIP
     port: 8082
 
+# Inventory service
+inventory:
+  replicaCount: 1
+
+  image:
+    repository: inventory-service
+    tag: v2
+
 nameOverride: ""
 fullnameOverride: ""

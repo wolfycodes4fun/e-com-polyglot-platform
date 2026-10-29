@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-inventory
+  labels:
+    {{ include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: inventory
+spec:
+  replicaCount: {{ .Values.inventory.replicaCount }}
+  selectorLabels:
+    matchLabels:
+      {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: inventory
+  template:
+    metadata:
+      labels:
+        {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8  }}
+        app.kubernetes.io/component: inventory
+    spec:
+      containers:
+        - name: inventory
+          image: "{{ .Values.inventory.image.repository }}:{{ .Values.inventory.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          resources:
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+selector:
