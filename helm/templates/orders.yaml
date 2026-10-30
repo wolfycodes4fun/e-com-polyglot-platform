@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deploymet
+metadata:
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-orders
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: orders
+spec:
+  replicas: {{ .Values.orders.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: orders
+  template:
+    metadata:
+      labels:
+        {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: orders
+    spec:
+      containers:
+        - name: orders
+          image: "{{ .Values.orders.image.repository }}:{{ .Values.orders.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: {{ .Values.orders.resources.requests.cpu | quote }}
+              memory: {{ .Values.orders.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.orders.resources.limits.cpu | quote }}
+              memory: {{ .Values.orders.resources.limits.memory | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.orders.service.port }}
+              protocol: TCP
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_USER
+            
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_PASSWORD
+
+            - name: ORDER_DB_DSN
+              value: "dbname=order_db user=$(DB_USER) password=$(DB_PASSWORD) host=postgres-db port={{ .Values.global.database.serverPort }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-service
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: orders
+spec:
+  type: {{ .Values.orders.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.orders.service.port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: orders

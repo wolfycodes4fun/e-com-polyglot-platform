@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ecom-polyglot-platform.fullname" }}
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-auth
   labels:
-    {{- include "ecom-polyglot-platform.labels" . | nindent 4 -}}
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: auth
 spec:
   replicas: {{ .Values.auth.replicaCount }}
@@ -16,41 +16,44 @@ spec:
     metadata:
       labels:
         {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: auth
     spec:
       containers:
         - name: auth
           image: "{{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: {{ .Values.auth.resources.requests.cpu | quote }}
+              memory: {{ .Values.auth.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.auth.resources.limits.cpu | quote }}
+              memory: {{ .Values.auth.resources.limits.memory | quote }} 
           ports:
             - name: http
               containerPort: {{ .Values.auth.service.port }}
               protocol: TCP
           env:
             - name: AUTH_DB_URL
-              value: "jdbc:postgresql://postgres-db:5432/auth_db"
+              value: "jdbc:postgresql://postgres-db:{{ .Values.global.database.serverPort }}/auth_db"
+
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.database.credentialSecret }}
-                  key: {{ .Values.global.database.usernameKey }}
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_USER
+
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.global.database.credentialSecret }}
-                  key: {{ .Values.global.database.passwordKey }}
-          resources:
-            requests:
-              memory: "{{ .Values.auth.resources.requests.memory }}"
-              cpu: "{{ .Values.auth.resources.requests.cpu }}"
-            limits:
-              memory: "{{ .Values.auth.resources.limits.memory }}"
-              cpu: "{{ .Values.auth.resources.limits.cpu }}"
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_PASSWORD
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth
+  name: auth-service
   labels:
     {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: auth

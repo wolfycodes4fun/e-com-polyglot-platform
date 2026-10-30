@@ -5,9 +5,9 @@ global:
     pullPolicy: Never
   
   database:
-    credentialSecret: ecom-polyglot-db-credentials
-    usernameKey: DB_USER
-    passwordKey: DB_PASSWORD
+    user: ""
+    password: ""
+    serverPort: 5432
 
 # Auth service
 auth:
@@ -28,6 +28,126 @@ auth:
   service:
     type: ClusterIP
     port: 8081
+
+# Catalog service
+catalog:
+  replicaCount: 1
+
+  image:
+    repository: catalog-service
+    tag: v2
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  service:
+    type: ClusterIP
+    port: 8082
+
+# Inventory service
+inventory:
+  replicaCount: 1
+
+  image:
+    repository: inventory-service
+    tag: v2
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  service:
+    type: ClusterIP
+    port: 8083
+
+# Notifications service
+notifications:
+  replicaCount: 1
+
+  image:
+    repository: notification-service
+    tag: v2
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  service:
+    type: ClusterIP
+    port: 8086
+
+# Orders service
+orders:
+  replicaCount: 1
+
+  image:
+    repository: order-service
+    tag: v2
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  service:
+    type: ClusterIP
+    port: 8084
+
+# Payments service
+payments:
+  replicaCount: 1
+
+  image:
+    repository: payment-service
+    tag: v2
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  service:
+    type: ClusterIP
+    port: 8085
+
+# Analytics service
+analytics:
+  replicaCount: 1
+
+  image:
+    repository: analytics-service
+    tag: v2
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  service:
+    type: ClusterIP
+    port: 8087
 
 nameOverride: ""
 fullnameOverride: ""
