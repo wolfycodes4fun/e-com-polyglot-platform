@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-payments
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: payments
+spec:
+  replicas: {{ .Values.payments.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: payments
+  template:
+    metadata:
+      labels:
+        {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: payments
+    spec:
+      containers:
+        - name: payments
+          image: "{{ .Values.payments.image.repository }}:{{ .Values.payments.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: {{ .Values.payments.resources.requests.cpu | quote }}
+              memory: {{ .Values.payments.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.payments.resources.limits.cpu | quote }}
+              memory: {{ .Values.payments.resources.limits.memory | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.payments.service.port }}
+              protocol: TCP
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_USER
+            
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_PASSWORD
+            
+            - name: PAYMENT_DB_URL
+              value: "Host=postgres-db;Port={{ .Values.global.database.serverPort }};Database=payment_db;Username=$(DB_USER);Password=$(DB_PASSWORD)"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-service
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: payments
+spec:
+  type: {{ .Values.payments.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.payments.service.port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: payments

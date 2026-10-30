@@ -7,8 +7,8 @@ metadata:
     {{ include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: inventory
 spec:
-  replicaCount: {{ .Values.inventory.replicaCount }}
-  selectorLabels:
+  replicas: {{ .Values.inventory.replicaCount }}
+  selector:
     matchLabels:
       {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: inventory
@@ -62,8 +62,8 @@ spec:
   ports:
     - name: http
       port: {{ .Values.inventory.service.port }} 
-      containerPort: http
+      targetPort: http
       protocol: TCP 
   selector:
-    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: inventory

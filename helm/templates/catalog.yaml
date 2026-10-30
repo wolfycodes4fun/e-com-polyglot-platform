@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: catalog
 spec:
   replicas: {{ .Values.catalog.replicaCount }}
-  selectorLabels:
+  selector:
     matchLabels:
       {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: catalog
@@ -62,8 +62,8 @@ spec:
   ports:
     - name: http
       port: {{ .Values.catalog.service.port }}
-      containerPort: http
+      targetPort: http
       protocol: TCP
   selector:
-    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: catalog

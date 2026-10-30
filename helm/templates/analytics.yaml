@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-analytics
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: analytics
+spec:
+  replicas: {{ .Values.analytics.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 6 }}
+      app.kubernees.io/component: analytics
+  template:
+    metadata:
+      labels:
+        {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: analytics
+    spec:
+      containers:
+        - name: analytics
+          image:
+          imagePullPolicy:
+          resources:
+            requests:
+              cpu: {{ .Values.analytics.resources.requests.cpu | quote }}
+              memory: {{ .Values.analytics.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.analytics.resources.limits.cpu | quote }}
+              memory: {{ .Values.analytics.resources.limits.memory | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.analytics.service.port }}
+              protocol: TCP
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_USER
+            
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: DB_PASSWORD
+            
+            - name: ANALYTICS_DB_DSN
+              value: "pgsql:host=postgres-db;port={{ .Values.global.database.serverPort }};dbname=analytics_db"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytics-service
+  labels:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: analytics
+spec:
+  type: {{ .Values.analytics.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.analytics.service.port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: analytics

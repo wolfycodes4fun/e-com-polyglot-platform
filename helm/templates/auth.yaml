@@ -24,18 +24,18 @@ spec:
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
             requests:
-              memory: "{{ .Values.auth.resources.requests.memory }}"
-              cpu: "{{ .Values.auth.resources.requests.cpu }}"
+              cpu: {{ .Values.auth.resources.requests.cpu | quote }}
+              memory: {{ .Values.auth.resources.requests.memory | quote }}
             limits:
-              memory: "{{ .Values.auth.resources.limits.memory }}"
-              cpu: "{{ .Values.auth.resources.limits.cpu }}"
+              cpu: {{ .Values.auth.resources.limits.cpu | quote }}
+              memory: {{ .Values.auth.resources.limits.memory | quote }} 
           ports:
             - name: http
               containerPort: {{ .Values.auth.service.port }}
               protocol: TCP
           env:
             - name: AUTH_DB_URL
-              value: "jdbc:postgresql://postgres-db:5432/auth_db"
+              value: "jdbc:postgresql://postgres-db:{{ .Values.global.database.serverPort }}/auth_db"
 
             - name: DB_USER
               valueFrom:
@@ -65,5 +65,5 @@ spec:
       targetPort: http
       protocol: TCP
   selector:
-    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: auth
