@@ -64,5 +64,5 @@ spec:
       targetPort: http
       protocol: TCP
   selector:
-    {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
+    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: orders
