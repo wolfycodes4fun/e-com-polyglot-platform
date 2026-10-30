@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+data:
+  bootstrap.sql: {{ .Files.Get "files/bootstrap.sql" | nindent 4 }}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-postgres
+spec:
+  serviceName: postgres-headless-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      labels:
+        {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.postgres.service.port }}
+              protocol: TCP
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: POSTGRES_USER
+            
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: POSTGRES_PASSWORD
+          resources:
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: bootstrap
+              mountPath: /docker-entrypoint-initdb.d/01-bootstrap.sql
+              subPath: bootstrap.sql
+              readOnly: true
+      # Shared storage that's the same for every subsequent pod (if any)    
+      volumes:
+        - name: bootstrap
+          configMap:
+            name: postgres-init
+  # Dedicated storage that will be different for every pod managed by the set  
+  volumeClaimTemplates:
+    - metadata: 
+        name: postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage.size }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless-service
+spec:
+  clusterIP: None
+  selector:
+    {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+  ports:
+    - protocol: TCP
+      port: {{ .Values.postgres.service.port }}
+      targetPort: postgres

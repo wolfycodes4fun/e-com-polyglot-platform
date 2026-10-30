@@ -23,12 +23,7 @@ spec:
           image: "{{ .Values.inventory.image.repository }}:{{ .Values.inventory.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
-            requests:
-              cpu: {{ .Values.inventory.resources.requests.cpu | quote }}
-              memory: {{ .Values.inventory.resources.requests.memory | quote }}
-            limits:
-              cpu: {{ .Values.inventory.resources.limits.cpu | quote }}
-              memory: {{ .Values.inventory.resources.limits.memory | quote }}
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.inventory.service.port }}
@@ -47,7 +42,7 @@ spec:
                   key: DB_PASSWORD
 
             - name: INVENTORY_DB_URL
-              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-db:{{ .Values.global.database.serverPort }}/inventory_db"
+              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-headless-service:{{ .Values.postgres.service.port }}/inventory_db"
 
 ---
 apiVersion: v1

@@ -23,12 +23,7 @@ spec:
           image: "{{ .Values.orders.image.repository }}:{{ .Values.orders.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
-            requests:
-              cpu: {{ .Values.orders.resources.requests.cpu | quote }}
-              memory: {{ .Values.orders.resources.requests.memory | quote }}
-            limits:
-              cpu: {{ .Values.orders.resources.limits.cpu | quote }}
-              memory: {{ .Values.orders.resources.limits.memory | quote }}
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.orders.service.port }}
@@ -47,7 +42,7 @@ spec:
                   key: DB_PASSWORD
 
             - name: ORDER_DB_DSN
-              value: "dbname=order_db user=$(DB_USER) password=$(DB_PASSWORD) host=postgres-db port={{ .Values.global.database.serverPort }}"
+              value: "dbname=order_db user=$(DB_USER) password=$(DB_PASSWORD) host=postgres-headless-service port={{ .Values.postgres.service.port }}"
 ---
 apiVersion: v1
 kind: Service

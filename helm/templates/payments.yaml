@@ -23,12 +23,7 @@ spec:
           image: "{{ .Values.payments.image.repository }}:{{ .Values.payments.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
-            requests:
-              cpu: {{ .Values.payments.resources.requests.cpu | quote }}
-              memory: {{ .Values.payments.resources.requests.memory | quote }}
-            limits:
-              cpu: {{ .Values.payments.resources.limits.cpu | quote }}
-              memory: {{ .Values.payments.resources.limits.memory | quote }}
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.payments.service.port }}
@@ -47,7 +42,7 @@ spec:
                   key: DB_PASSWORD
             
             - name: PAYMENT_DB_URL
-              value: "Host=postgres-db;Port={{ .Values.global.database.serverPort }};Database=payment_db;Username=$(DB_USER);Password=$(DB_PASSWORD)"
+              value: "Host=postgres-headless-service;Port={{ .Values.postgres.service.port }};Database=payment_db;Username=$(DB_USER);Password=$(DB_PASSWORD)"
 ---
 apiVersion: v1
 kind: Service
