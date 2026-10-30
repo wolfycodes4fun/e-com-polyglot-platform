@@ -9,6 +9,18 @@ global:
     password: ""
     serverPort: 5432
 
+# Postgres database
+postgres:
+  postgresUser: ""
+  postgresUserPassword: ""
+
+  image:
+    repository: postgres
+    tag: 17-alpine
+
+  service:
+    port: 5432
+
 # Auth service
 auth:
   replicaCount: 1

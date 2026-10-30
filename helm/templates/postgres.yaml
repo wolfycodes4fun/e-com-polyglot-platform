@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-postgres
+spec:
+  serviceName: postgres-headless-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.postgres.service.port }}
+              protocol: TCP
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: POSTGRES_USER
+            
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ecom-polyglot-platform.fullname" . }}-secret
+                  key: POSTGRES_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless-service
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/component: postgres
+  ports:
+    - protocol: TCP
+      port: {{ .Values.postgres.service.port }}
+      targetPort: postgres
+      
