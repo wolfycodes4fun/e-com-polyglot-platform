@@ -23,12 +23,7 @@ spec:
           image: "{{ .Values.notifications.image.repository }}:{{ .Values.notifications.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
-            requests:
-              cpu: {{ .Values.notifications.resources.requests.cpu | quote }}
-              memory: {{ .Values.notifications.resources.requests.memory | quote }}
-            limits:
-              cpu: {{ .Values.notifications.resources.limits.cpu | quote }}
-              memory: {{ .Values.notifications.resources.limits.memory | quote }}
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.notifications.service.port }}
@@ -47,7 +42,7 @@ spec:
                   key: DB_PASSWORD
             
             - name: NOTIFICATION_DB_URL
-              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-db:{{ .Values.global.database.serverPort }}/notification_db"
+              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-headless-service:{{ .Values.global.database.serverPort }}/notification_db"
 
 ---
 apiVersion: v1

@@ -23,12 +23,7 @@ spec:
           image: "{{ .Values.catalog.image.repository }}:{{ .Values.catalog.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
-            requests:
-              cpu: "{{ .Values.catalog.resources.requests.cpu }}"
-              memory: "{{ .Values.catalog.resources.requests.memory }}"
-            limits:
-              cpu: "{{ .Values.catalog.resources.limits.cpu }}"
-              memory: "{{ .Values.catalog.resources.limits.memory }}"
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.catalog.service.port }}
@@ -47,7 +42,7 @@ spec:
                   key: DB_PASSWORD
 
             - name: CATALOG_DB_DSN
-              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-db:5432/catalog_db?sslmode=disable"
+              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-headless-service:5432/catalog_db?sslmode=disable"
 
 ---
 apiVersion: v1

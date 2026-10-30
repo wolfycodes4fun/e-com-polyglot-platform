@@ -23,12 +23,7 @@ spec:
           image:
           imagePullPolicy:
           resources:
-            requests:
-              cpu: {{ .Values.analytics.resources.requests.cpu | quote }}
-              memory: {{ .Values.analytics.resources.requests.memory | quote }}
-            limits:
-              cpu: {{ .Values.analytics.resources.limits.cpu | quote }}
-              memory: {{ .Values.analytics.resources.limits.memory | quote }}
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.analytics.service.port }}
@@ -47,7 +42,7 @@ spec:
                   key: DB_PASSWORD
             
             - name: ANALYTICS_DB_DSN
-              value: "pgsql:host=postgres-db;port={{ .Values.global.database.serverPort }};dbname=analytics_db"
+              value: "pgsql:host=postgres-headless-service;port={{ .Values.global.database.serverPort }};dbname=analytics_db"
 
 ---
 apiVersion: v1

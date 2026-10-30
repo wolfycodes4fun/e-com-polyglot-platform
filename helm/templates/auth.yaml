@@ -23,19 +23,14 @@ spec:
           image: "{{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
-            requests:
-              cpu: {{ .Values.auth.resources.requests.cpu | quote }}
-              memory: {{ .Values.auth.resources.requests.memory | quote }}
-            limits:
-              cpu: {{ .Values.auth.resources.limits.cpu | quote }}
-              memory: {{ .Values.auth.resources.limits.memory | quote }} 
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.auth.service.port }}
               protocol: TCP
           env:
             - name: AUTH_DB_URL
-              value: "jdbc:postgresql://postgres-db:{{ .Values.global.database.serverPort }}/auth_db"
+              value: "jdbc:postgresql://postgres-headless-service:{{ .Values.global.database.serverPort }}/auth_db"
 
             - name: DB_USER
               valueFrom:
