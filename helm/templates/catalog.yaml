@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ include "ecom-polyglot-platform.fullname" . }}-catalog"
+  name: {{ include "ecom-polyglot-platform.fullname" . }}-catalog
   labels:
     {{- include "ecom-polyglot-platform.labels" . | nindent 4 }}
     app.kubernetes.io/component: catalog
