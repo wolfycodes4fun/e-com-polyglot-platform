@@ -42,7 +42,7 @@ spec:
                   key: DB_PASSWORD
 
             - name: ORDER_DB_DSN
-              value: "dbname=order_db user=$(DB_USER) password=$(DB_PASSWORD) host=postgres-headless-service port={{ .Values.global.database.serverPort }}"
+              value: "dbname=order_db user=$(DB_USER) password=$(DB_PASSWORD) host=postgres-headless-service port={{ .Values.postgres.service.port }}"
 ---
 apiVersion: v1
 kind: Service

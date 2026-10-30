@@ -42,7 +42,7 @@ spec:
                   key: DB_PASSWORD
             
             - name: ANALYTICS_DB_DSN
-              value: "pgsql:host=postgres-headless-service;port={{ .Values.global.database.serverPort }};dbname=analytics_db"
+              value: "pgsql:host=postgres-headless-service;port={{ .Values.postgres.service.port }};dbname=analytics_db"
 
 ---
 apiVersion: v1

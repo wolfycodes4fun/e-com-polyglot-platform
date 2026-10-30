@@ -42,7 +42,7 @@ spec:
                   key: DB_PASSWORD
 
             - name: CATALOG_DB_DSN
-              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-headless-service:5432/catalog_db?sslmode=disable"
+              value: "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-headless-service:{{ .Values.postgres.service.port }}/catalog_db?sslmode=disable"
 
 ---
 apiVersion: v1

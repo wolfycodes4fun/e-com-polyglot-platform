@@ -42,7 +42,7 @@ spec:
                   key: DB_PASSWORD
             
             - name: PAYMENT_DB_URL
-              value: "Host=postgres-headless-service;Port={{ .Values.global.database.serverPort }};Database=payment_db;Username=$(DB_USER);Password=$(DB_PASSWORD)"
+              value: "Host=postgres-headless-service;Port={{ .Values.postgres.service.port }};Database=payment_db;Username=$(DB_USER);Password=$(DB_PASSWORD)"
 ---
 apiVersion: v1
 kind: Service

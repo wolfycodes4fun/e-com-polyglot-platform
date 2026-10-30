@@ -30,7 +30,7 @@ spec:
               protocol: TCP
           env:
             - name: AUTH_DB_URL
-              value: "jdbc:postgresql://postgres-headless-service:{{ .Values.global.database.serverPort }}/auth_db"
+              value: "jdbc:postgresql://postgres-headless-service:{{ .Values.postgres.service.port }}/auth_db"
 
             - name: DB_USER
               valueFrom:

@@ -7,7 +7,6 @@ global:
   database:
     user: ""
     password: ""
-    serverPort: 5432
 
 # Postgres database
 postgres:
