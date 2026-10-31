@@ -3,15 +3,16 @@
 global:
   image:
     pullPolicy: Never
-  
-  database:
-    user: ""
-    password: ""
 
 # Postgres database
 postgres:
-  postgresUser: ""
-  postgresUserPassword: ""
+  # Sudo user credentials for postgres pods
+  sudoUser: ""
+  sudoUserPassword: ""
+
+  # Service account user credentials
+  user: ""
+  password: ""
 
   image:
     repository: postgres
