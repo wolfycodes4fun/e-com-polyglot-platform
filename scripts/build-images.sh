@@ -12,10 +12,9 @@ local_cluster_name=$3
 POSTGRES_IMAGE_TAG="${4:-17-alpine}"
 
 
-# mkdir -p $ecom_polyglot_repo && cd $ecom_polyglot_repo \
-# && git clone git@github.com:wolfycodes4fun/e-com-polyglot.git \
-# && 
-cd $ecom_polyglot_repo && cd e-com-polyglot
+mkdir -p $ecom_polyglot_repo && cd $ecom_polyglot_repo \
+&& git clone git@github.com:wolfycodes4fun/e-com-polyglot.git \
+&& cd e-com-polyglot
 
 docker_images=(
     "analytics-service:v2"
