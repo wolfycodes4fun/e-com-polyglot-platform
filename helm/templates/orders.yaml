@@ -26,7 +26,10 @@ spec:
             {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
-              containerPort: {{ .Values.orders.service.port }}
+              containerPort: {{ .Values.orders.service.applicationPort }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.orders.service.metricsPort }}
               protocol: TCP
           env:
             - name: DB_USER
@@ -55,8 +58,12 @@ spec:
   type: {{ .Values.orders.service.type }}
   ports:
     - name: http
-      port: {{ .Values.orders.service.port }}
+      port: {{ .Values.orders.service.applicationPort }}
       targetPort: http
+      protocol: TCP
+    - name: metrics
+      port: {{ .Values.orders.service.metricsPort }}
+      targetPort: metrics
       protocol: TCP
   selector:
     {{- include "ecom-polyglot-platform.selectorLabels" . | nindent 4 }}
