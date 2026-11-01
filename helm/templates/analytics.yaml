@@ -26,7 +26,7 @@ spec:
             {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
-              containerPort: {{ .Values.analytics.service.port }}
+              containerPort: {{ .Values.analytics.service.applicationPort }}
               protocol: TCP
           env:
             - name: DB_USER
@@ -56,7 +56,7 @@ spec:
   type: {{ .Values.analytics.service.type }}
   ports:
     - name: http
-      port: {{ .Values.analytics.service.port }}
+      port: {{ .Values.analytics.service.applicationPort }}
       targetPort: http
       protocol: TCP
   selector:

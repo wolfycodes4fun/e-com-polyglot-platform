@@ -49,7 +49,8 @@ auth:
   
   service:
     type: ClusterIP
-    port: 8081
+    applicationPort: 8081
+    metricsPort: 9091
 
 # Catalog service
 catalog:
@@ -69,7 +70,7 @@ catalog:
   
   service:
     type: ClusterIP
-    port: 8082
+    applicationPort: 8082
 
 # Inventory service
 inventory:
@@ -89,7 +90,7 @@ inventory:
   
   service:
     type: ClusterIP
-    port: 8083
+    applicationPort: 8083
 
 # Notifications service
 notifications:
@@ -109,7 +110,7 @@ notifications:
   
   service:
     type: ClusterIP
-    port: 8086
+    applicationPort: 8086
 
 # Orders service
 orders:
@@ -129,7 +130,8 @@ orders:
 
   service:
     type: ClusterIP
-    port: 8084
+    applicationPort: 8084
+    metricsPort: 9091
 
 # Payments service
 payments:
@@ -149,7 +151,7 @@ payments:
   
   service:
     type: ClusterIP
-    port: 8085
+    applicationPort: 8085
 
 # Analytics service
 analytics:
@@ -169,7 +171,7 @@ analytics:
   
   service:
     type: ClusterIP
-    port: 8087
+    applicationPort: 8087
 
 nameOverride: ""
 fullnameOverride: ""
