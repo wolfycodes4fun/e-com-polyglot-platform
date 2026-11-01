@@ -26,7 +26,7 @@ spec:
             {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:
             - name: http
-              containerPort: {{ .Values.payments.service.port }}
+              containerPort: {{ .Values.payments.service.applicationPort }}
               protocol: TCP
           env:
             - name: DB_USER
@@ -55,7 +55,7 @@ spec:
   type: {{ .Values.payments.service.type }}
   ports:
     - name: http
-      port: {{ .Values.payments.service.port }}
+      port: {{ .Values.payments.service.applicationPort }}
       targetPort: http
       protocol: TCP
   selector:
