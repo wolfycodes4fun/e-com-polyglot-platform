@@ -12,4 +12,6 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update 
 
 # Install the added Helm charts
-helm install monitoring-stack prometheus-community/kube-prometheus-stack --namespace monitoring
+helm install monitoring-stack prometheus-community/kube-prometheus-stack \
+    --namespace monitoring \
+    --create-namespace

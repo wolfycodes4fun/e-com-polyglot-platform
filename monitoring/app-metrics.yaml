@@ -1,0 +1,41 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ecom-polyglot-auth-app-metrics
+  namespace: monitoring
+  labels:
+    release: monitoring-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - dev
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: dev-release
+      app.kubernetes.io/component: auth
+  endpoints:
+    - port: metrics
+      path: /actuator/prometheus
+      interval: 15s
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ecom-polyglot-order-app-metrics
+  namespace: monitoring
+  labels:
+    release: monitoring-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - dev
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: dev-release
+      app.kubernetes.io/component: orders
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s

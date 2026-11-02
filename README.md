@@ -3,6 +3,8 @@ Platform architecture for the demo e-commerce application avaialble in the e-com
 
 For development I have used a local Minikube cluster hence all commands present hereafter will mostly be tailored towards **minikube**!
 
+Furthermore, the release name I used throughout is 'dev-release'.
+
 ## Pre-requisites
 
 * Have either **minikube** or **kind** installed on your machine.
