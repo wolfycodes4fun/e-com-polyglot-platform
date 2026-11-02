@@ -20,8 +20,8 @@ spec:
     spec:
       containers:
         - name: analytics
-          image:
-          imagePullPolicy:
+          image: "{{ .Values.analytics.image.repository }}:{{ .Values.analytics.image.tag }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           resources:
             {{- toYaml .Values.postgres.resources | nindent 12 }}
           ports:

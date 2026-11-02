@@ -1,6 +1,6 @@
 ---
 apiVersion: apps/v1
-kind: Deploymet
+kind: Deployment
 metadata:
   name: {{ include "ecom-polyglot-platform.fullname" . }}-orders
   labels:
