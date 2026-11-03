@@ -1,0 +1,53 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ecom-polyglot-app-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring-stack
+spec:
+  groups:
+    - name: ecom-polyglot-http-errors
+      rules:
+        - alert: AuthHttp5xxRateAboveOnePercent
+          expr: |
+            sum(rate(http_server_requests_seconds_count{
+              job="auth",
+              status=~"5..",
+              uri!="/health"
+            }[5m]))
+            /
+            sum(rate(http_server_requests_seconds_count{
+              job="auth",
+              uri!="/health"
+            }[5m]))
+            > 0.01
+          for: 2m
+          labels:
+            severity: warning
+            service: auth
+          annotations:
+            summary: HTTP 5XX error rate is above 1% for the auth service
+            description: Auth 5xx error rate has remained over 1% for 2 minutes.
+
+        - alert: OrdersHttp5xxRateAboveOnePercent
+          expr: |
+            sum(rate(http_requests_total{
+              job="orders",
+              status=~"5..",
+              route!="/health"
+            }[5m]))
+            /
+            sum(rate(http_requests_total{
+              job="orders",
+              route!="/health"
+            }[5m]))
+            > 0.01
+          for: 2m
+          labels:
+            severity: warning
+            service: orders
+          annotations:
+            summary: HTTP 5xx error rate is above 1% for the orders service
+            description: Orders 5xx error rate has remained over 1% for 2 minutes.
