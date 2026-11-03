@@ -3,6 +3,8 @@ Platform architecture for the demo e-commerce application avaialble in the e-com
 
 For development I have used a local Minikube cluster hence all commands present hereafter will mostly be tailored towards **minikube**!
 
+Furthermore, the release name I used throughout is 'dev-release'.
+
 ## Pre-requisites
 
 * Have either **minikube** or **kind** installed on your machine.
@@ -40,3 +42,10 @@ For development I have used a local Minikube cluster hence all commands present 
 2) Run 'kubectl delete namespace \<namespace-created-for-deployment\>'
 
 2) Run 'minikube stop'
+
+# Verifying Monitoring/Observability
+
+1) Run 'kubectl get services -n monitoring'; assuming kube-prometheus-stack installed in **monitoring** namespace.  
+   Check for the service listening on port 9090 and port forward as shown in the next step.
+
+2) Run 'kubectl port-forward svc/monitoring-stack-kube-prom-prometheus -n monitoring'
