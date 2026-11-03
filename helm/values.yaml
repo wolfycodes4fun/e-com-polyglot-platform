@@ -1,4 +1,7 @@
 ---
+nameOverride: ""
+fullnameOverride: ""
+
 # Global config
 global:
   image:
@@ -172,5 +175,22 @@ analytics:
     type: ClusterIP
     applicationPort: 8087
 
-nameOverride: ""
-fullnameOverride: ""
+# UI
+ui:
+  replicaCount: 1
+
+  image:
+    repository: ecomsite
+    tag: v1
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  
+  service:
+    type: NodePort
+    applicationPort: 80
