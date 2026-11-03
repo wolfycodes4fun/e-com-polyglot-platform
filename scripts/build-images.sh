@@ -25,6 +25,7 @@ docker_images=(
     "notification-service:v1"
     "order-service:v1"
     "payment-service:v1"
+    "ecomsite:v1"
 )
 
 if [[ $local_cluster_type != "kind" && $local_cluster_type != "minikube" ]]; then
