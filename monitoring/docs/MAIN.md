@@ -49,3 +49,4 @@ RED metrics; request rate, error rate & latency will be shown for **auth** and *
         route!="/health"  
     }[5m]))
 
+* LatencyOrders ()

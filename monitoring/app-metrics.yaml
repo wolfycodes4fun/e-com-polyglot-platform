@@ -10,7 +10,7 @@ spec:
   jobLabel: app.kubernetes.io/component
   namespaceSelector:
     matchNames:
-      - dev
+      - stg
   selector:
     matchLabels:
       app.kubernetes.io/instance: dev-release
@@ -32,7 +32,7 @@ spec:
   jobLabel: app.kubernetes.io/component
   namespaceSelector:
     matchNames:
-      - dev
+      - stg
   selector:
     matchLabels:
       app.kubernetes.io/instance: dev-release
