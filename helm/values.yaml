@@ -39,7 +39,7 @@ auth:
 
   image:
     repository: auth-service
-    tag: v1
+    tag: v3
 
   resources:
     requests:
@@ -120,7 +120,7 @@ orders:
 
   image:
     repository: order-service
-    tag: v1
+    tag: v4
   
   resources:
     requests:
