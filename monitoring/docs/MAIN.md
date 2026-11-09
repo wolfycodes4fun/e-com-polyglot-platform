@@ -49,4 +49,23 @@ RED metrics; request rate, error rate & latency will be shown for **auth** and *
         route!="/health"  
     }[5m]))
 
-* LatencyOrders ()
+* LatencyAuth (Request latency - p95 for auth requests categorized by API path)  
+    histogram_quantile(  
+        0.95,  
+        sum by (le, uri) (  
+            rate(http_server_requests_seconds_bucket{  
+                job="auth",  
+                uri!="/health"
+            }[5m])
+        )  
+    )  
+* LatencyOrders (Request latency - p95 for orders requests categorized by API path)  
+    histogram_quantile(  
+        0.95,  
+        sum by (le, route) (  
+            rate(http_request_duration_seconds_bucket{  
+                job="orders",  
+                route!="/health"  
+            }[5m])  
+        )  
+    )  

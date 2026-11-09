@@ -120,7 +120,7 @@ orders:
 
   image:
     repository: order-service
-    tag: v2
+    tag: v4
   
   resources:
     requests:
