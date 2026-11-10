@@ -9,4 +9,7 @@ To trigger an email to be sent as the alert:
     kubectl apply -k kustomization.yaml  
   to create the smtp password as a k8s secret. This command needs to be run from the root of the projects. A .env file with the variable **SMTP_PASSWORD** needs to be available under the monitoring folder.
 * Apply the alertmanager-values.yaml under the values folder with the command:
-    helm upgrade --install monitoring-stack prometheus-community/kube-prometheus-stack --namespace monitoring --reuse-values -f .  \monitoring\alertmanager-values.yaml
+    helm upgrade --install monitoring-stack prometheus-community/kube-prometheus-stack \  
+      --namespace monitoring \  
+      --reuse-values \  
+      -f .\monitoring\values\alertmanager-values.yaml
