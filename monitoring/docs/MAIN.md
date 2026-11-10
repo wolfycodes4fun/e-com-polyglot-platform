@@ -69,3 +69,29 @@ RED metrics; request rate, error rate & latency will be shown for **auth** and *
             }[5m])  
         )  
     )  
+
+K8S resource usage:  
+
+* CPU usage by node  
+    sum by (instance) (  
+        rate(node_cpu_seconds_total{mode!="idle"}[5m])  
+    )  
+
+* Memory usage by node  
+    node_memory_MemTotal_bytes{job="node-exporter"} - node_memory_MemAvailable_bytes{job="node-exporter"}  
+
+* CPU usage by pod in specified namespace  
+    sum by (pod) (   
+        rate(container_cpu_usage_seconds_total{  
+            job="kubelet",  
+            namespace="stg"  
+        }[5m])  
+    )  
+
+* Memory usage by pod in specified namespace  
+    sum by (pod) (  
+        container_memory_working_set_bytes{  
+            job="kubelet",  
+            namespace="stg",  
+        }  
+    )  
